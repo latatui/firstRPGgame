@@ -9,7 +9,8 @@ public class PlayerStats : MonoBehaviour
     public int strength = 0;
     public int agility = 0;
     public int defense = 0;
-    public int health = 100;
+    public int currentHealth;
+    public int maxHealth = 100;
     public float criticalChance = 0f;
     public float criticalDamage = 1.5f;
     public float attackMultiplier = 1f; // 기본 공격력 배율
@@ -24,12 +25,18 @@ public class PlayerStats : MonoBehaviour
 
     public Text strengthText, agilityText, defenseText, healthText, critChanceText, critDamageText, statPointText, jobText;
 
+    private UIManager uiManager; // UIManager 참조
     private bool isStatPanelOpen = false;
 
     void Start()
     {
         UpdateStatUI();
+        currentHealth = maxHealth;
         jobChangePanel.SetActive(false);
+        uiManager = FindObjectOfType<UIManager>(); // UIManager 찾기
+
+        if (uiManager == null)
+            Debug.LogError("UIManager를 찾을 수 없습니다!");
 
         jobYesButton.onClick.AddListener(() => ChangeJob("전사"));
         jobNoButton.onClick.AddListener(() => jobChangePanel.SetActive(false));
@@ -50,6 +57,11 @@ public class PlayerStats : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.U))
         {
             LevelUp();
+        }
+        
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            TakeDamage(25);
         }
     }
 
@@ -82,7 +94,8 @@ public class PlayerStats : MonoBehaviour
                 defense++;
                 break;
             case "Health":
-                health += 10;
+                maxHealth += 10;
+                currentHealth += 10;
                 break;
             case "CritChance":
                 criticalChance += 1f;
@@ -120,10 +133,37 @@ public class PlayerStats : MonoBehaviour
         strengthText.text = "힘: " + strength;
         agilityText.text = "민첩: " + agility;
         defenseText.text = "방어: " + defense;
-        healthText.text = "체력: " + health;
+        healthText.text = "체력: " + maxHealth;
         critChanceText.text = "치명타 확률: " + criticalChance + "%";
         critDamageText.text = "치명타 데미지: " + criticalDamage + "x";
         statPointText.text = "남은 스탯 포인트: " + statPoints;
         jobText.text = "직업: " + currentJob;
+    }
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            // 게임 오버 처리 또는 플레이어 사망 처리
+            Debug.Log("플레이어 사망");
+        }
+        UpdateHealthUI();
+    }
+        void UpdateHealthUI()
+    {
+        // 체력 UI 업데이트
+        uiManager.UpdateUI();
+        Debug.Log("현재 체력: " + currentHealth);
+    }
+
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+        UpdateHealthUI();
     }
 }
