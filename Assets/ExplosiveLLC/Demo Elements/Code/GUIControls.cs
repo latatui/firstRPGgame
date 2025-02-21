@@ -2,48 +2,44 @@
 
 namespace WarriorAnimsFREE
 {
-	public class GUIControls:MonoBehaviour
-	{
-		private WarriorController warriorController;
+    public class WarriorInput : MonoBehaviour
+    {
+        private WarriorController warriorController;
 
-		private void Awake()
-		{
-			warriorController = GetComponent<WarriorController>();
-		}
+        private void Awake()
+        {
+            warriorController = GetComponent<WarriorController>();
+        }
 
-		private void OnGUI()
-		{
-			if (warriorController.canAction) {
-				Attacking();
-				Jumping();
-			}
+        private void Update()
+        {
+            if (warriorController.canAction)
+            {
+                HandleAttack();
+                HandleJump();
+            }
+        }
 
-			Debug();
-		}
+        private void HandleAttack()
+        {
+            if (warriorController.MaintainingGround() && warriorController.canAction)
+            {
+                if (Input.GetMouseButtonDown(0)) // 좌클릭 입력 감지
+                {
+                    warriorController.Attack1();
+                }
+            }
+        }
 
-		private void Attacking()
-		{
-			if (warriorController.MaintainingGround() && warriorController.canAction) {
-					if (GUI.Button(new Rect(25, 85, 100, 30), "Attack1")) { warriorController.Attack1(); }
-			}
-		}
-
-		private void Jumping()
-		{
-			if (warriorController.canJump
-				&& warriorController.canAction) {
-				if (warriorController.MaintainingGround()) {
-					if (GUI.Button(new Rect(25, 175, 100, 30), "Jump")) {
-						if (warriorController.canJump) { warriorController.inputJump = true; ; }
-					}
-				}
-			}
-		}
-
-		private void Debug()
-		{
-			if (GUI.Button(new Rect(600, 15, 120, 30), "Debug Controller")) { warriorController.ControllerDebug(); }
-			if (GUI.Button(new Rect(600, 50, 120, 30), "Debug Animator")) { warriorController.AnimatorDebug(); }
-		}
-	}
+        private void HandleJump()
+        {
+            if (warriorController.canJump && warriorController.canAction)
+            {
+                if (warriorController.MaintainingGround() && Input.GetKeyDown(KeyCode.Space)) // 스페이스바 입력 감지
+                {
+                    warriorController.inputJump = true;
+                }
+            }
+        }
+    }
 }

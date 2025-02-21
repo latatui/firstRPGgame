@@ -123,6 +123,70 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &4974335 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6718588461118902311, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+  m_PrefabInstance: {fileID: 562928382}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4974343 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6718588461118409735, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+  m_PrefabInstance: {fileID: 562928382}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4974344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4974335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e5b4ae655d794c3ebaa3b7faa81a649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerStats: {fileID: 4974345}
+  playerCamera: {fileID: 942492688}
+  statUI: {fileID: 1461952564}
+  moveSpeed: 5
+  mouseSensitivity: 2
+  jumpForce: 7
+--- !u!114 &4974345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4974335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4acdf7bbc524a4df6b54440db4253aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 1
+  statPoints: 3
+  strength: 1
+  agility: 1
+  defense: 1
+  currentHealth: 100
+  maxHealth: 100
+  criticalChance: 0
+  criticalDamage: 1.5
+  attackMultiplier: 1
+  currentJob: "\uCD08\uBCF4\uC790"
+  statPanel: {fileID: 1461952564}
+  jobChangePanel: {fileID: 2041485725}
+  jobChangeText: {fileID: 210556053}
+  jobYesButton: {fileID: 1446026129}
+  jobNoButton: {fileID: 671853462}
+  strengthText: {fileID: 1714504682}
+  agilityText: {fileID: 944256000}
+  defenseText: {fileID: 286464437}
+  healthText: {fileID: 1026289491}
+  critChanceText: {fileID: 1766029134}
+  critDamageText: {fileID: 812541301}
+  statPointText: {fileID: 1064725538}
+  jobText: {fileID: 657889568}
 --- !u!1 &210556051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,7 +1147,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6718588461118409735, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.2166455
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6718588461118409735, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1091,7 +1155,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6718588461118409735, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.45671964
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6718588461118409735, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1135,8 +1199,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6718588461118409735, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 942492688}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6718588461118902311, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4974345}
+    - targetCorrespondingSourceObject: {fileID: 6718588461118902311, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4974344}
   m_SourcePrefab: {fileID: 100100000, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
 --- !u!1 &634730228
 GameObject:
@@ -2142,11 +2215,11 @@ Transform:
   m_GameObject: {fileID: 942492687}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.17, z: -4.24}
+  m_LocalPosition: {x: 0, y: 2.98, z: -4.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1562319538}
+  m_Father: {fileID: 4974343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!81 &942492689
 AudioListener:
@@ -2811,6 +2884,10 @@ PrefabInstance:
     - target: {fileID: 9186795781410484748, guid: dd9d3d7655ac3934d9096722ca483868, type: 3}
       propertyPath: m_Name
       value: Mage Warrior
+      objectReference: {fileID: 0}
+    - target: {fileID: 9186795781410484748, guid: dd9d3d7655ac3934d9096722ca483868, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3615,7 +3692,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1562319533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3755,8 +3832,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 1.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 942492688}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1562319539
