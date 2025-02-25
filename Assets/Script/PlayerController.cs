@@ -1,25 +1,28 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-    public PlayerStats playerStats;  // 플레이어 스탯
-    public Transform playerCamera;   // 카메라
-    public GameObject statUI;        // 스탯 UI
-    public Animator animator; 
+    public PlayerStats playerStats;
+    public Transform playerCamera;
+    public GameObject statUI;
+    public Animator animator;
 
     public float moveSpeed = 5f;
     public float mouseSensitivity = 2f;
     public float jumpForce = 7f;
+    public float gravity = -9.81f;  // 자체 중력 값 (수동 설정)
     private float rotationX = 0f;
 
     private Rigidbody rb;
     private bool isGrounded;
     private bool isStatUIOpen = false;
+    private bool isAttacking = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();  // ✅ 애니메이터 연결
+        animator = GetComponent<Animator>();
 
         if (rb == null)
         {
@@ -28,32 +31,32 @@ public class PlayerController : MonoBehaviour
         else
         {
             rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            rb.useGravity = false;  // 중력 비활성화
         }
-        animator = GetComponent<Animator>();
         if (animator == null)
         {
             Debug.LogError("Animator가 없습니다! 2Handed Warrior 게임 오브젝트에 Animator를 추가하세요.");
         }
 
-        LockCursor(true); // 게임 시작 시 마우스 숨기기
+        LockCursor(true);
     }
 
     void Update()
     {
-        if (!isStatUIOpen)
+        if (!isStatUIOpen && !isAttacking)
         {
             HandleMovement();
             HandleMouseLook();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isAttacking)
         {
             Jump();
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !isAttacking)
         {
-            Attack();
+            StartCoroutine(Attack());
         }
 
         if (Input.GetKeyDown(KeyCode.G))
@@ -67,38 +70,45 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 플레이어 이동 처리 및 애니메이션 실행
-    /// </summary>
-   void HandleMovement()
+    void HandleMovement()
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
+
+        float currentMoveSpeed = (vertical < 0) ? moveSpeed - 10f : moveSpeed;
+
         Vector3 movement = transform.right * horizontal + transform.forward * vertical;
-        rb.MovePosition(rb.position + movement * moveSpeed * Time.deltaTime);
+        rb.MovePosition(rb.position + movement * currentMoveSpeed * Time.deltaTime);
 
-        // ⭐ 이동 여부 체크 ⭐
         bool isMoving = (horizontal != 0 || vertical != 0);
+        bool isMovingBackward = vertical < 0;
 
-        // ⭐ Animator가 있을 경우 애니메이션 변경 ⭐
         if (animator != null)
         {
-            if (isMoving)
-            {
-                animator.SetBool("isMoving", true); // 이동 중
-            }
-            else
-            {
-                animator.SetBool("isMoving", false); // 가만히 있을 때 Idle 애니메이션 실행
-            }
+            animator.SetBool("isMoving", isMoving);
+            animator.SetBool("isMovingBackward", isMovingBackward);
         }
     }
 
+    IEnumerator Attack()
+    {
+        isAttacking = true;
+        animator.SetTrigger("AttackTrigger");
 
+        float attackMoveSpeed = 2.5f;
+        float attackDuration = 1.0f;
 
-    /// <summary>
-    /// 마우스 움직임 처리
-    /// </summary>
+        float elapsedTime = 0f;
+        while (elapsedTime < attackDuration)
+        {
+            rb.MovePosition(rb.position + transform.forward * attackMoveSpeed * Time.deltaTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        isAttacking = false;
+    }
+
     void HandleMouseLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
@@ -110,33 +120,13 @@ public class PlayerController : MonoBehaviour
         playerCamera.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
     }
 
-    /// <summary>
-    /// 점프 처리 및 애니메이션 실행
-    /// </summary>
     void Jump()
     {
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         isGrounded = false;
-
-        // ✅ 점프 애니메이션 실행
         animator.SetTrigger("Jump");
     }
 
-    /// <summary>
-    /// 공격 처리 및 애니메이션 실행
-    /// </summary>
-    void Attack()
-    {
-        float attackDamage = 10f * playerStats.attackMultiplier;
-        Debug.Log("공격! 데미지: " + attackDamage);
-
-        // ✅ 공격 애니메이션 실행
-        animator.SetTrigger("AttackTrigger");
-    }
-
-    /// <summary>
-    /// 바닥 감지 처리
-    /// </summary>
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -145,9 +135,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 스탯 UI 토글
-    /// </summary>
     void ToggleStatUI()
     {
         isStatUIOpen = !isStatUIOpen;
@@ -155,17 +142,14 @@ public class PlayerController : MonoBehaviour
 
         if (isStatUIOpen)
         {
-            LockCursor(false); // 마우스 보이게
+            LockCursor(false);
         }
         else
         {
-            LockCursor(true); // 마우스 숨기기
+            LockCursor(true);
         }
     }
 
-    /// <summary>
-    /// 마우스 커서 잠금 및 해제
-    /// </summary>
     void LockCursor(bool lockCursor)
     {
         if (lockCursor)
@@ -177,6 +161,15 @@ public class PlayerController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+    }
+
+    // 중력 적용
+    void FixedUpdate()
+    {
+        if (!isGrounded)
+        {
+            rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
         }
     }
 }
