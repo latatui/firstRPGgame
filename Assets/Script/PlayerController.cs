@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public float mouseSensitivity = 2f;
     public float jumpForce = 7f;
-    public float gravity = -9.81f;  // 자체 중력 값 (수동 설정)
+    public float gravity = 9.81f;  // 자체 중력 값 (수동 설정)
     private float rotationX = 0f;
 
     private Rigidbody rb;
@@ -43,6 +43,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        Debug.Log("isGrounded: " + isGrounded);
+
         if (!isStatUIOpen && !isAttacking)
         {
             HandleMovement();
@@ -75,7 +77,7 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        float currentMoveSpeed = (vertical < 0) ? moveSpeed - 10f : moveSpeed;
+        float currentMoveSpeed = (vertical < 0) ? moveSpeed - 1f : moveSpeed;
 
         Vector3 movement = transform.right * horizontal + transform.forward * vertical;
         rb.MovePosition(rb.position + movement * currentMoveSpeed * Time.deltaTime);
@@ -122,15 +124,19 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);  // y축 속도 초기화
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         isGrounded = false;
-        animator.SetTrigger("Jump");
+        animator.SetTrigger("isJumping");
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("Collision: " + collision.gameObject.name);
         if (collision.gameObject.CompareTag("Ground"))
         {
+            Debug.Log("Grounded!");
+            if (isGrounded == false) animator.SetBool("isJumping",false);
             isGrounded = true;
         }
     }
@@ -169,7 +175,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!isGrounded)
         {
-            rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
+            Vector3 gravityForce = Vector3.down * gravity;  // 아래 방향 중력
+            rb.AddForce(gravityForce, ForceMode.Acceleration);  // 중력 지속 적용
         }
     }
 }
