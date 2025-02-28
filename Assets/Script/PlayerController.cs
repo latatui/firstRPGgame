@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
     private bool isStatUIOpen = false;
-    private bool isAttacking = false;
+    public bool isAttacking = false;
 
     void Start()
     {

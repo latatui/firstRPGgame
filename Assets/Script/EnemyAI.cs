@@ -15,12 +15,17 @@ public class EnemyAI : MonoBehaviour
     private Animator animator;
     private PlayerStats playerStats;
 
+    private Rigidbody rb;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerStats = player.GetComponent<PlayerStats>();
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true; // 물리적 충돌 방지
     }
+
 
     void Update()
     {
@@ -41,9 +46,10 @@ public class EnemyAI : MonoBehaviour
     {
         animator.SetBool("isMoving", true);
         Vector3 direction = (player.position - transform.position).normalized;
-        transform.position += direction * moveSpeed * Time.deltaTime;
-        transform.LookAt(player);
+        rb.MovePosition(transform.position + direction * moveSpeed * Time.deltaTime);
+        transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
     }
+
 
     IEnumerator Attack()
     {
@@ -76,11 +82,16 @@ public class EnemyAI : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
+{
+    if (other.CompareTag("Weapon"))
     {
-        if (other.CompareTag("Weapon") && player.GetComponent<PlayerController>().isAttacking)
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        if (playerController != null && playerController.isAttacking)
         {
             TakeDamage(playerStats.attackPower);
         }
     }
+}
+
 }
