@@ -8,7 +8,7 @@ public class PlayerStats : MonoBehaviour
     public int experience = 0;
     public int experienceToNextLevel = 10;
 
-    public int strength = 0;
+    public int strength = 1;
     public int agility = 0;
     public int defense = 0;
     public int currentHealth;
@@ -16,7 +16,7 @@ public class PlayerStats : MonoBehaviour
     public float criticalChance = 0f;
     public float criticalDamage = 1.5f;
     public float attackMultiplier = 1f; // 기본 공격 배율
-    public int attackPower = 0; // 공격력 변수 추가
+    public int attackPower = 10; // 공격력 변수 추가
 
     public string currentJob = "초보자";
 

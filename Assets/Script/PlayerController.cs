@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
+        Debug.Log("공격!"+ playerStats.attackPower);
         isAttacking = false;
     }
 
